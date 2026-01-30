@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<!--
+    GYM Master - Sistema de Gestion de Gimnasios
+    Documentacion Tecnica Bilingue (ES/EN)
+    Desarrollado por SysTaich
+    Version 24
+-->
+<html lang="es">
+<head>
+<!-- Configuracion basica de la pagina -->
+<meta charset="utf-8">
+<title>GYM Master - Documentacion Tecnica | Technical Documentation</title>
+<meta name="description" content="Documentacion tecnica del Sistema de Gestion de Gimnasios GYM Master - Technical documentation for GYM Master Gym Management System">
+<meta name="author" content="SysTaich">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<!-- Hojas de estilo CSS -->
+<link rel="stylesheet" href="css/style.css" type="text/css" media="all">
+<link rel="stylesheet" href="css/print.css" type="text/css" media="print">
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700|Roboto+Slab:300,400" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="shortcut icon" href="images/favicon.ico">
+
+<!-- Estilos personalizados para mejoras de diseno -->
+<style>
+/* Variables de colores del tema */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --bg-light: #f8f9fa;
+    --bg-dark: #1a1a2e;
+    --text-dark: #2c3e50;
+    --text-light: #7f8c8d;
+    --border-color: #e0e0e0;
+    --shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Contenedor principal mejorado */
+#wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+/* Barra superior de herramientas */
+.top-toolbar {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Selector de idioma */
+.language-selector {
+    display: flex;
+    gap: 5px;
+    background: rgba(255,255,255,0.1);
+    padding: 5px;
+    border-radius: 30px;
+}
+
+.lang-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lang-btn.active {
+    background: #fff;
+    color: var(--primary-color);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.lang-btn:not(.active) {
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+}
+
+.lang-btn:hover:not(.active) {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+/* Buscador */
+.search-container {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+    min-width: 250px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 45px 12px 20px;
+    border: none;
+    border-radius: 30px;
+    font-size: 14px;
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    transform: scale(1.02);
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-color);
+    font-size: 18px;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+    margin-top: 10px;
+    z-index: 1001;
+}
+
+.search-results.active {
+    display: block;
+}
+
+.search-result-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.search-result-item:hover {
+    background: var(--bg-light);
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+/* Menu lateral */
+#side-nav {
+    position: fixed;
+    width: 280px;
+    height: calc(100vh - 80px);
+    background: #fff;
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    padding: 20px;
+    z-index: 999;
+    top: 80px;
+}
+
+#side-nav .logo {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+#side-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#side-nav ul li {
+    margin-bottom: 5px;
+}
+
+#side-nav ul li a {
+    display: block;
+    padding: 12px 15px;
+    color: var(--text-dark);
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    border-left: 3px solid transparent;
+}
+
+#side-nav ul li a:hover,
+#side-nav ul li a.current {
+    background: linear-gradient(135deg, rgba(52,152,219,0.1), rgba(155,89,182,0.1));
+    color: var(--secondary-color);
+    border-left-color: var(--secondary-color);
+    transform: translateX(5px);
+}
+
+#side-nav ul li a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Contenido principal */
+.main-content {
+    margin-left: 300px;
+    padding: 30px 40px;
+    min-height: calc(100vh - 80px);
+}
+
+/* Cabecera de seccion */
+.section-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.section-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+
+.section-header h3,
+.section-header h4 {
+    margin: 0 0 10px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.section-header p {
+    margin: 0;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+/* Tarjetas de contenido */
+.content-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.content-card h4 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.content-card h4 i {
+    color: var(--secondary-color);
+}
+
+/* Listas mejoradas */
+.feature-list {
+    list-style: none;
+    padding: 0;
+}
+
+.feature-list li {
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    background: var(--bg-light);
+    border-radius: 10px;
+    border-left: 4px solid var(--secondary-color);
+    transition: all 0.3s ease;
+}
+
+.feature-list li:hover {
+    background: linear-gradient(90deg, rgba(52,152,219,0.1), transparent);
+    transform: translateX(5px);
+}
+
+.feature-list li strong {
+    color: var(--primary-color);
+}
+
+/* Imagenes */
+.doc-image {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    margin: 20px 0;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease;
+}
+
+.doc-image:hover {
+    transform: scale(1.02);
+}
+
+/* Alertas */
+.alert {
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd, #ffeeba);
+    border-left: 4px solid var(--warning-color);
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+    border-left: 4px solid var(--secondary-color);
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    border-left: 4px solid var(--accent-color);
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border-left: 4px solid var(--success-color);
+}
+
+.alert i {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+/* Codigo */
+.code-block {
+    background: var(--bg-dark);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+    margin: 15px 0;
+}
+
+mark {
+    background: linear-gradient(135deg, #fff3cd, #ffeeba);
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+/* Widget WhatsApp */
+.whatsapp-widget {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+}
+
+.whatsapp-btn {
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 32px;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(37,211,102,0.4);
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+}
+
+.whatsapp-btn:hover {
+    transform: scale(1.1) rotate(10deg);
+    box-shadow: 0 8px 30px rgba(37,211,102,0.5);
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 6px 20px rgba(37,211,102,0.4); }
+    50% { box-shadow: 0 6px 30px rgba(37,211,102,0.6); }
+}
+
+.whatsapp-tooltip {
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-widget:hover .whatsapp-tooltip {
+    opacity: 1;
+    visibility: visible;
+    right: 85px;
+}
+
+/* Boton scroll */
+.scroll-top-btn {
+    position: fixed;
+    bottom: 110px;
+    right: 35px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 9998;
+}
+
+.scroll-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-top-btn:hover {
+    transform: translateY(-5px);
+}
+
+/* Footer */
+.footer {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #fff;
+    text-align: center;
+    padding: 30px;
+    margin-top: 50px;
+}
+
+.footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Barra de progreso */
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+    z-index: 10000;
+    transition: width 0.1s ease;
+}
+
+/* Boton menu mobile */
+.menu-toggle {
+    display: none;
+    width: 45px;
+    height: 45px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 24px;
+}
+
+.toc-toggle {
+    display: none;
+    position: fixed;
+    bottom: 180px;
+    right: 35px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--warning-color), var(--accent-color));
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    z-index: 9997;
+    border: none;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    #side-nav {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    #side-nav.active {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+    
+    .top-toolbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .search-container {
+        max-width: 100%;
+        order: 3;
+    }
+    
+    .menu-toggle {
+        display: flex;
+    }
+    
+    .toc-toggle {
+        display: flex;
+    }
+}
+
+/* Impresion */
+@media print {
+    .top-toolbar,
+    .whatsapp-widget,
+    .scroll-top-btn,
+    .toc-toggle,
+    #side-nav {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+    }
+}
+
+/* Control de idioma */
+.lang-es, .lang-en {
+    display: none;
+}
+
+body.lang-es .lang-es {
+    display: block;
+}
+
+body.lang-en .lang-en {
+    display: block;
+}
+
+body.lang-es .lang-es-inline,
+body.lang-en .lang-en-inline {
+    display: inline;
+}
+
+/* Animaciones */
+section {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Separador */
+.section-divider {
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary-color), var(--accent-color), var(--warning-color));
+    border-radius: 2px;
+    margin: 40px 0;
+}
+</style>
+
+<!-- Scripts -->
+<script src="js/jquery.min.js"></script>
+</head>
+<body class="lang-es">
+
+<!-- Barra de progreso de lectura -->
+<div class="reading-progress" id="readingProgress"></div>
+
+<!-- Contenedor principal -->
+<div id="wrap" class="colorskin-0">
+    
+    <!-- Barra superior -->
+    <div class="top-toolbar">
+        <!-- Boton menu mobile -->
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Logo -->
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="images/logo.png" alt="GYM Master Logo" style="height: 40px; border-radius: 8px;">
+            <span style="color: #fff; font-weight: 700; font-size: 18px;">GYM Master</span>
+        </div>
+        
+        <!-- Buscador -->
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Buscar en la documentacion...">
+            <i class="fas fa-search search-icon"></i>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+        
+        <!-- Selector de idioma -->
+        <div class="language-selector">
+            <button class="lang-btn active" id="btnEspanol" onclick="changeLanguage('es')">
+                <i class="fas fa-globe"></i> ES
+            </button>
+            <button class="lang-btn" id="btnEnglish" onclick="changeLanguage('en')">
+                <i class="fas fa-globe"></i> EN
+            </button>
+        </div>
+    </div>
+
+    <section class="container">
+        <div class="row">
+            
+            <!-- Menu lateral -->
+            <aside id="side-nav">
+                <div class="logo">
+                    <img src="images/logo.png" alt="GYM Master" style="max-width: 150px;">
+                    <p style="margin-top: 10px; font-size: 12px; color: var(--text-light);">
+                        <span class="lang-es">v24 - Documentacion Tecnica</span>
+                        <span class="lang-en">v24 - Technical Documentation</span>
+                    </p>
+                </div>
+                
+                <ul id="top-menu">
+                    <!-- Menu Espanol -->
+                    <div class="lang-es">
+                        <li><a class="current" href="#Introduction"><i class="fas fa-home"></i> Introduccion</a></li>
+                        <li><a href="#requirement"><i class="fas fa-server"></i> Requisitos del Sistema</a></li>
+                        <li><a href="#Installation"><i class="fas fa-download"></i> Instalacion</a></li>
+                        <li><a href="#update"><i class="fas fa-sync-alt"></i> Actualizacion</a></li>
+                        <li><a href="#mobile_api"><i class="fas fa-mobile-alt"></i> API Movil</a></li>
+                        <li><a href="#fronted-login"><i class="fas fa-sign-in-alt"></i> Pagina de Acceso</a></li>
+                        <li><a href="#fronted"><i class="fas fa-user-plus"></i> Registro de Miembros</a></li>
+                        <li><a href="#admin_view"><i class="fas fa-user-shield"></i> Vista Administrador</a></li>
+                        <li><a href="#staff_view"><i class="fas fa-users-cog"></i> Vista Personal</a></li>
+                        <li><a href="#member_view"><i class="fas fa-user"></i> Vista Miembro</a></li>
+                        <li><a href="#accountant_view"><i class="fas fa-calculator"></i> Vista Contador</a></li>
+                        <li><a href="#FAQ"><i class="fas fa-question-circle"></i> Preguntas Frecuentes</a></li>
+                        <li><a href="#setting-up-Language"><i class="fas fa-language"></i> Configurar Idioma</a></li>
+                    </div>
+                    
+                    <!-- Menu Ingles -->
+                    <div class="lang-en">
+                        <li><a class="current" href="#Introduction"><i class="fas fa-home"></i> Introduction</a></li>
+                        <li><a href="#requirement"><i class="fas fa-server"></i> System Requirements</a></li>
+                        <li><a href="#Installation"><i class="fas fa-download"></i> Installation</a></li>
+                        <li><a href="#update"><i class="fas fa-sync-alt"></i> Update</a></li>
+                        <li><a href="#mobile_api"><i class="fas fa-mobile-alt"></i> Mobile API</a></li>
+                        <li><a href="#fronted-login"><i class="fas fa-sign-in-alt"></i> Login Page</a></li>
+                        <li><a href="#fronted"><i class="fas fa-user-plus"></i> Member Registration</a></li>
+                        <li><a href="#admin_view"><i class="fas fa-user-shield"></i> Admin View</a></li>
+                        <li><a href="#staff_view"><i class="fas fa-users-cog"></i> Staff View</a></li>
+                        <li><a href="#member_view"><i class="fas fa-user"></i> Member View</a></li>
+                        <li><a href="#accountant_view"><i class="fas fa-calculator"></i> Accountant View</a></li>
+                        <li><a href="#FAQ"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                        <li><a href="#setting-up-Language"><i class="fas fa-language"></i> Language Setup</a></li>
+                    </div>
+                </ul>
+            </aside>
+            
+            <!-- Contenido principal -->
+            <div class="main-content">
+                
+                <!-- Introduccion -->
+                <section id="Introduction">
+                    <div class="section-header">
+                        <h3>
+                            <span class="lang-es">GYM Master - Sistema de Gestion de Gimnasios</span>
+                            <span class="lang-en">GYM Master - Gym Management System</span>
+                            <sub><small>V24</small></sub>
+                        </h3>
+                        <p>
+                            <span class="lang-es">Documentacion Tecnica por SysTaich</span>
+                            <span class="lang-en">Technical Documentation by SysTaich</span>
+                        </p>
+                    </div>
+                    
+                    <p align="center"><img src="images/preview-image.png" class="doc-image" alt="GYM Master Preview"></p>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-info-circle"></i>
+                            <span class="lang-es">A) Introduccion</span>
+                            <span class="lang-en">A) Introduction</span>
+                        </h4>
+                        
+                        <div class="lang-es">
+                            <p>El Sistema de Gestion de Gimnasios para CakePHP es la solucion integral para administrar todas las operaciones de un gimnasio. El sistema implementa diferentes roles de usuario como Personal (Staff Member), Miembro (Member), Contador (Accountant) y Administrador (Admin).</p>
+                            <p>Esta guia de usuario cubre todas las opciones que proporciona este script de CakePHP. Se recomienda leer la documentacion detenidamente ya que probablemente contiene respuestas a la mayoria de las preguntas que puedan surgir. Si considera que algun aspecto no esta cubierto o tiene consultas adicionales, contactenos via correo electronico a <strong>soporte@systaich.com</strong>.</p>
+                        </div>
+                        
+                        <div class="lang-en">
+                            <p>Gym Management System for CakePHP is the ideal way to manage complete Gym operations. It has different user roles like Staff Member, Member, Accountant and Admin user.</p>
+                            <p>This user guide covers all options that this CakePHP script provides. Please read the documentation carefully as it probably contains answers to most of questions that may arise. If you feel some aspect is not covered or have some questions, contact us via e-mail at <strong>support@systaich.com</strong>.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Requisitos del Sistema -->
+                <section id="requirement">
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-server"></i>
+                            <span class="lang-es">Requisitos de CakePHP 3</span>
+                            <span class="lang-en">CakePHP 3 Requirements</span>
+                        </h4>
+                        
+                        <ul class="feature-list">
+                            <li>
+                                <strong>HTTP Server:</strong>
+                                <span class="lang-es">Por ejemplo: Apache. Se recomienda tener mod_rewrite habilitado, aunque no es estrictamente requerido.</span>
+                                <span class="lang-en">For example: Apache. Having mod_rewrite is preferred, but by no means required.</span>
+                            </li>
+                            <li>
+                                <strong>PHP 5.5.9</strong>
+                                <span class="lang-es">o superior [5.6 Recomendado]</span>
+                                <span class="lang-en">or greater [5.6 Recommended]</span>
+                            </li>
+                            <li>
+                                <strong>mbstring:</strong>
+                                <span class="lang-es">Extension PHP requerida</span>
+                                <span class="lang-en">PHP extension required</span>
+                            </li>
+                            <li>
+                                <strong>intl:</strong>
+                                <span class="lang-es">Extension PHP requerida</span>
+                                <span class="lang-en">PHP extension required</span>
+                            </li>
+                        </ul>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <span class="lang-es">Por favor, confirme los requisitos anteriores con su proveedor de hosting para un proceso de instalacion sin problemas.</span>
+                                <span class="lang-en">Please confirm above requirements to your host for smooth installation process.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Instalacion -->
+                <section id="Installation">
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-upload"></i>
+                            <span class="lang-es">1) Carga via FTP</span>
+                            <span class="lang-en">1) FTP Upload</span>
+                        </h4>
+                        
+                        <ul class="feature-list">
+                            <li>
+                                <span class="lang-es">Descomprima el archivo <mark>gym_master.zip</mark></span>
+                                <span class="lang-en">Unzip the <mark>gym_master.zip</mark> file</span>
+                            </li>
+                            <li>
+                                <span class="lang-es">Cargue la carpeta extraida <mark>gym_master</mark> en su servidor</span>
+                                <span class="lang-en">Upload the extracted <mark>gym_master</mark> folder into your server</span>
+                            </li>
+                            <li>
+                                <span class="lang-es">Abra en el navegador web y vera el asistente de instalacion</span>
+                                <span class="lang-en">Open in web browser, you will see installation wizard</span>
+                            </li>
+                            <li>
+                                <span class="lang-es">Acceda a la base de datos raiz y ejecute la siguiente consulta:</span>
+                                <span class="lang-en">Go to your root database and execute below query:</span>
+                                <div class="code-block">SET GLOBAL sql_mode=''</div>
+                            </li>
+                        </ul>
+                        
+                        <img src="images/set sql.png" class="doc-image" alt="SQL Configuration">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-cogs"></i>
+                            <span class="lang-es">B) Proceso de Instalacion</span>
+                            <span class="lang-en">B) Installation Process</span>
+                        </h4>
+                        
+                        <!-- Paso 1 -->
+                        <h5>
+                            <span class="lang-es"><strong>1) Requisitos del Servidor</strong></span>
+                            <span class="lang-en"><strong>1) Server Requirements</strong></span>
+                        </h5>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <span class="lang-es">Si la extension Intl de su servidor esta deshabilitada, vera este mensaje de error.</span>
+                                <span class="lang-en">If Your Server's Intl Extension Is Disabled Then You Will See This Message.</span>
+                            </div>
+                        </div>
+                        
+                        <img src="images/installer/installer0.png" class="doc-image" alt="Installer Step 0">
+                        <img src="images/installer/installer1.png" class="doc-image" alt="Installer Step 1">
+                        
+                        <ul class="feature-list">
+                            <li><strong>PHP Version:</strong> <span class="lang-es">Verifique su version de PHP</span><span class="lang-en">Check Your PHP Version</span></li>
+                            <li><strong>mbstring extension:</strong> <span class="lang-es">Verifique su extension mbstring</span><span class="lang-en">Check Your mbstring Extension</span></li>
+                            <li><strong>intl extension:</strong> <span class="lang-es">Verifique su extension intl</span><span class="lang-en">Check Your intl Extension</span></li>
+                        </ul>
+                        
+                        <!-- Paso 2 -->
+                        <h5>
+                            <span class="lang-es"><strong>2) Configuracion de Base de Datos</strong></span>
+                            <span class="lang-en"><strong>2) Database Setup</strong></span>
+                        </h5>
+                        
+                        <img src="images/installer/installer2.png" class="doc-image" alt="Database Setup">
+                        
+                        <ul class="feature-list">
+                            <li><strong>Database Name:</strong> <span class="lang-es">Ingrese el nombre de la base de datos</span><span class="lang-en">Enter Database name</span></li>
+                            <li><strong>Database Username:</strong> <span class="lang-es">Ingrese el nombre de usuario de la base de datos</span><span class="lang-en">Enter Database Username</span></li>
+                            <li><strong>Database Password:</strong> <span class="lang-es">Ingrese la contrasena de la base de datos</span><span class="lang-en">Enter Database Password</span></li>
+                            <li><strong>Host:</strong> <span class="lang-es">Ingrese el nombre del host</span><span class="lang-en">Enter Host Name</span></li>
+                        </ul>
+                        
+                        <!-- Paso 3 -->
+                        <h5>
+                            <span class="lang-es"><strong>3) Configuracion del Sistema</strong></span>
+                            <span class="lang-en"><strong>3) System Setting</strong></span>
+                        </h5>
+                        
+                        <img src="images/installer/installer3.png" class="doc-image" alt="System Settings">
+                        
+                        <ul class="feature-list">
+                            <li><strong>System Name:</strong> <span class="lang-es">Ingrese el nombre de su sistema</span><span class="lang-en">Enter your System name</span></li>
+                            <li><strong>Country:</strong> <span class="lang-es">Seleccione su pais</span><span class="lang-en">Select your Country Name</span></li>
+                            <li><strong>Select Currency:</strong> <span class="lang-es">Seleccione la moneda</span><span class="lang-en">Select Currency</span></li>
+                            <li><strong>Email:</strong> <span class="lang-es">Ingrese su direccion de correo electronico</span><span class="lang-en">Enter your email Address</span></li>
+                            <li><strong>Date Format:</strong> <span class="lang-es">Seleccione el formato de fecha</span><span class="lang-en">Select Date Format</span></li>
+                            <li><strong>Calendar Language:</strong> <span class="lang-es">Seleccione el idioma del calendario</span><span class="lang-en">Select Calendar Language</span></li>
+                        </ul>
+                        
+                        <!-- Paso 4 -->
+                        <h5>
+                            <span class="lang-es"><strong>4) Credenciales de Acceso</strong></span>
+                            <span class="lang-en"><strong>4) Login Details</strong></span>
+                        </h5>
+                        
+                        <img src="images/installer/installer4.png" class="doc-image" alt="Login Details">
+                        
+                        <ul class="feature-list">
+                            <li><strong>Username:</strong> <span class="lang-es">Ingrese el nombre de usuario del administrador</span><span class="lang-en">Enter admin username</span></li>
+                            <li><strong>Password:</strong> <span class="lang-es">Ingrese la contrasena del administrador</span><span class="lang-en">Enter admin password</span></li>
+                        </ul>
+                        
+                        <!-- Paso 5 -->
+                        <h5>
+                            <span class="lang-es"><strong>5) Finalizar Instalacion</strong></span>
+                            <span class="lang-en"><strong>5) Finish Installation</strong></span>
+                        </h5>
+                        
+                        <img src="images/installer/installer5.png" class="doc-image" alt="Finish Installation">
+                        <img src="images/installer/Installer6.png" class="doc-image" alt="Installation Complete">
+                        
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <span class="lang-es">Una vez instalado el sistema correctamente, puede iniciar sesion con el nombre de usuario y contrasena configurados.</span>
+                                <span class="lang-en">Once System installed successfully, you can login into the system with entered username and password.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Actualizacion -->
+                <section id="update">
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-sync-alt"></i>
+                            <span class="lang-es">5) Actualizacion del Sistema</span>
+                            <span class="lang-en">5) System Update</span>
+                        </h4>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <strong class="lang-es">No es necesario seguir estos pasos si esta instalando por primera vez.</strong>
+                                <strong class="lang-en">No need to follow below steps if you are installing first time.</strong>
+                            </div>
+                        </div>
+                        
+                        <ul class="feature-list">
+                            <li>
+                                <span class="lang-es">Extraiga la carpeta update_v19 del archivo gym_master.zip</span>
+                                <span class="lang-en">Extract update_v19 folder from gym_master.zip file</span>
+                            </li>
+                            <li>
+                                <span class="lang-es">Abra la carpeta <strong>update_v19</strong> extraida</span>
+                                <span class="lang-en">Open the extracted <strong>update_v19</strong> folder</span>
+                            </li>
+                            <li>
+                                <span class="lang-es">Copie las carpetas src y webroot y reemplacelas en el directorio gym_master</span>
+                                <span class="lang-en">Copy src and webroot folders and replace in gym_master directory</span>
+                            </li>
+                        </ul>
+                        
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div>
+                                <strong class="lang-es">NOTA: REALICE UNA COPIA DE SEGURIDAD DE LAS CARPETAS SRC Y WEBROOT ANTES DE ACTUALIZAR.</strong>
+                                <strong class="lang-en">NOTE: PLEASE BACKUP YOUR SRC AND WEBROOT FOLDER BEFORE UPDATING.</strong>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- API Movil -->
+                <section id="mobile_api">
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-mobile-alt"></i>
+                            <span class="lang-es">API Movil</span>
+                            <span class="lang-en">Mobile API</span>
+                        </h4>
+                        
+                        <ul class="feature-list">
+                            <li>
+                                <span class="lang-es">Los archivos de la API Movil estan ubicados en la carpeta <strong>"gym_master/webroot/nghome"</strong></span>
+                                <span class="lang-en">Mobile API files are located at <strong>"gym_master/webroot/nghome"</strong> folder</span>
+                            </li>
+                        </ul>
+                        
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div>
+                                <strong class="lang-es">NOTA: No cambie el nombre del directorio ni su ubicacion. De lo contrario, la API dejara de funcionar.</strong>
+                                <strong class="lang-en">NOTE: Do not change directory name or location. Otherwise API will stop working.</strong>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Pagina de Login -->
+                <section id="fronted-login">
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span class="lang-es">6) Pagina de Acceso</span>
+                            <span class="lang-en">6) Frontend Login Page</span>
+                        </h4>
+                        
+                        <p>
+                            <span class="lang-es">Despues de completar el asistente de instalacion, vera esta pagina de inicio de sesion.</span>
+                            <span class="lang-en">After completing installation wizard you will see this login page.</span>
+                        </p>
+                        
+                        <img src="images/login.png" class="doc-image" alt="Login Page">
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Registro de Miembros -->
+                <section id="fronted">
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-user-plus"></i>
+                            <span class="lang-es">7) Registro de Miembros</span>
+                            <span class="lang-en">7) Member Registration</span>
+                        </h4>
+                        
+                        <p>
+                            <span class="lang-es">Los miembros pueden registrarse haciendo clic en el enlace de registro en la pagina de login.</span>
+                            <span class="lang-en">Members can register by clicking on member registration link on login page.</span>
+                        </p>
+                        
+                        <img src="images/member_registartion.png" class="doc-image" alt="Member Registration">
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Vista de Administrador -->
+                <section id="admin_view">
+                    <div class="section-header">
+                        <h4>
+                            <i class="fas fa-user-shield"></i>
+                            <span class="lang-es">C) Vista del Administrador</span>
+                            <span class="lang-en">C) Admin View</span>
+                        </h4>
+                    </div>
+                    
+                    <div class="content-card">
+                        <h5><strong>Dashboard:</strong></h5>
+                        <img src="images/admin/Dashboard.png" class="doc-image" alt="Admin Dashboard">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-cog"></i>
+                            <span class="lang-es">1) Configuracion General</span>
+                            <span class="lang-en">1) General Settings</span>
+                        </h4>
+                        <img src="images/admin/GeneralSetting.png" class="doc-image" alt="General Settings">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-id-card"></i>
+                            <span class="lang-es">2) Tipos de Membresia</span>
+                            <span class="lang-en">2) Membership Type</span>
+                        </h4>
+                        <img src="images/admin/Membership.png" class="doc-image" alt="Membership">
+                        <img src="images/admin/add_Membership.png" class="doc-image" alt="Add Membership">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-users"></i>
+                            <span class="lang-es">3) Grupos</span>
+                            <span class="lang-en">3) Groups</span>
+                        </h4>
+                        <img src="images/admin/GymGroup.png" class="doc-image" alt="Groups">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-user-tie"></i>
+                            <span class="lang-es">4) Personal</span>
+                            <span class="lang-en">4) Staff Member</span>
+                        </h4>
+                        <img src="images/admin/StaffMembers.png" class="doc-image" alt="Staff Members">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-calendar-alt"></i>
+                            <span class="lang-es">5) Horarios de Clases</span>
+                            <span class="lang-en">5) Class Schedule</span>
+                        </h4>
+                        <img src="images/admin/ClassSchedule.png" class="doc-image" alt="Class Schedule">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-user"></i>
+                            <span class="lang-es">6) Miembros</span>
+                            <span class="lang-en">6) Members</span>
+                        </h4>
+                        <img src="images/admin/gymMember2.png" class="doc-image" alt="Members">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-running"></i>
+                            <span class="lang-es">7) Actividades</span>
+                            <span class="lang-en">7) Activities</span>
+                        </h4>
+                        <img src="images/admin/activity_list.png" class="doc-image" alt="Activities">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-dumbbell"></i>
+                            <span class="lang-es">8) Entrenamientos</span>
+                            <span class="lang-en">8) Workouts</span>
+                        </h4>
+                        <img src="images/admin/GymAssignWorkout.png" class="doc-image" alt="Workouts">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-credit-card"></i>
+                            <span class="lang-es">15) Pagos</span>
+                            <span class="lang-en">15) Payments</span>
+                        </h4>
+                        <img src="images/admin/membership_payment_list.png" class="doc-image" alt="Payments">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-chart-bar"></i>
+                            <span class="lang-es">20) Reportes</span>
+                            <span class="lang-en">20) Reports</span>
+                        </h4>
+                        <img src="images/admin/member_ship_report.png" class="doc-image" alt="Reports">
+                    </div>
+                    
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-user-lock"></i>
+                            <span class="lang-es">21) Derechos de Acceso</span>
+                            <span class="lang-en">21) Access Rights</span>
+                        </h4>
+                        <img src="images/admin/access-rights.png" class="doc-image" alt="Access Rights">
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Vista del Personal -->
+                <section id="staff_view">
+                    <div class="section-header">
+                        <h4>
+                            <i class="fas fa-users-cog"></i>
+                            <span class="lang-es">D) Vista del Personal</span>
+                            <span class="lang-en">D) Staff Member View</span>
+                        </h4>
+                    </div>
+                    
+                    <div class="content-card">
+                        <h5><strong>Dashboard:</strong></h5>
+                        <img src="images/staff_member/staffDashboard.png" class="doc-image" alt="Staff Dashboard">
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Vista del Miembro -->
+                <section id="member_view">
+                    <div class="section-header">
+                        <h4>
+                            <i class="fas fa-user"></i>
+                            <span class="lang-es">E) Vista del Miembro</span>
+                            <span class="lang-en">E) Member View</span>
+                        </h4>
+                    </div>
+                    
+                    <div class="content-card">
+                        <h5><strong>Dashboard:</strong></h5>
+                        <img src="images/member/member_dashboard.png" class="doc-image" alt="Member Dashboard">
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Vista del Contador -->
+                <section id="accountant_view">
+                    <div class="section-header">
+                        <h4>
+                            <i class="fas fa-calculator"></i>
+                            <span class="lang-es">F) Vista del Contador</span>
+                            <span class="lang-en">F) Accountant View</span>
+                        </h4>
+                    </div>
+                    
+                    <div class="content-card">
+                        <h5><strong>Dashboard:</strong></h5>
+                        <img src="images/accountant/dashboard.png" class="doc-image" alt="Accountant Dashboard">
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- FAQ -->
+                <section id="FAQ">
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-question-circle"></i>
+                            <span class="lang-es">G) Preguntas Frecuentes (FAQ)</span>
+                            <span class="lang-en">G) Frequently Asked Questions (FAQ)</span>
+                        </h4>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div>
+                                <p><strong>1) I Don't see Installer Page properly. No background image, no Next button nothing.</strong></p>
+                                <p class="lang-es">Asegurese de tener el archivo <strong>.htaccess</strong> en el directorio principal (en la carpeta gym_master).</p>
+                                <p class="lang-en">Make Sure you have <strong>.htaccess</strong> file on main directory (in gym_master folder).</p>
+                                <p class="lang-es">Si ya tiene el archivo .htaccess, asegurese de que su host tenga el modulo mod_rewrite activado.</p>
+                                <p class="lang-en">If you already have .htaccess, make sure your host has mod_rewrite module on.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-danger">
+                            <i class="fas fa-times-circle"></i>
+                            <div>
+                                <p><strong>2) When I go to Payment pages it says: An Internal Error Has Occurred.</strong></p>
+                                <p class="lang-es">Para esto debe volver a cargar el archivo <strong>paypal_class.php</strong> via cPanel.</p>
+                                <p class="lang-en">For this you have to re-upload file <strong>paypal_class.php</strong> via cPanel file manager.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <span class="lang-es">Si desea personalizacion paga, contactenos en <a href="mailto:soporte@systaich.com">soporte@systaich.com</a>.</span>
+                                <span class="lang-en">If you want paid customization, contact us at <a href="mailto:support@systaich.com">support@systaich.com</a>.</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <div class="section-divider"></div>
+                
+                <!-- Configuracion de Idioma -->
+                <section id="setting-up-Language">
+                    <div class="content-card">
+                        <h4>
+                            <i class="fas fa-language"></i>
+                            <span class="lang-es">H) Configuracion de Idioma</span>
+                            <span class="lang-en">H) Setting Up Language</span>
+                        </h4>
+                        
+                        <p>
+                            <span class="lang-es">Desde la version V14, la aplicacion soporta 31 idiomas.</span>
+                            <span class="lang-en">Since V14 application supports 31 languages.</span>
+                        </p>
+                        
+                        <p>
+                            <span class="lang-es">Para cambiar el idioma vaya al menu "General Settings" y seleccione el <strong>idioma del sistema</strong>.</span>
+                            <span class="lang-en">To change the application language goto "General Settings" menu and select <strong>system language</strong>.</span>
+                        </p>
+                        
+                        <p>
+                            <span class="lang-es">Puede configurar la aplicacion en modo <strong>RTL</strong>.</span>
+                            <span class="lang-en">You can set application to <strong>RTL</strong>.</span>
+                        </p>
+                    </div>
+                </section>
+                
+                <!-- Footer -->
+                <div class="footer">
+                    <p>&copy; 2024 SysTaich - <span class="lang-es">Todos los Derechos Reservados</span><span class="lang-en">All Rights Reserved</span></p>
+                    <p>
+                        <span class="lang-es">Documentacion Tecnica de GYM Master v24</span>
+                        <span class="lang-en">GYM Master v24 Technical Documentation</span>
+                    </p>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Widget WhatsApp -->
+<div class="whatsapp-widget">
+    <span class="whatsapp-tooltip">
+        <span class="lang-es">Contactanos por WhatsApp</span>
+        <span class="lang-en">Contact us on WhatsApp</span>
+    </span>
+    <a href="https://wa.me/51904427032" target="_blank" class="whatsapp-btn" aria-label="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</div>
+
+<!-- Boton scroll arriba -->
+<a href="#" class="scroll-top-btn" id="scrollTopBtn" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+</a>
+
+<!-- Boton tabla de contenidos mobile -->
+<button class="toc-toggle" id="tocToggle" aria-label="Table of Contents">
+    <i class="fas fa-list"></i>
+</button>
+
+<!-- Scripts -->
+<script src="js/jquery.jcarousel.min.js"></script>
+<script src="js/doubletaptogo.js"></script>
+<script src="js/cube-custom.js"></script>
+
+<script>
+// Funcion para cambiar idioma
+function changeLanguage(lang) {
+    document.body.className = 'lang-' + lang;
+    
+    document.getElementById('btnEspanol').classList.remove('active');
+    document.getElementById('btnEnglish').classList.remove('active');
+    
+    if (lang === 'es') {
+        document.getElementById('btnEspanol').classList.add('active');
+        document.getElementById('searchInput').placeholder = 'Buscar en la documentacion...';
+    } else {
+        document.getElementById('btnEnglish').classList.add('active');
+        document.getElementById('searchInput').placeholder = 'Search documentation...';
+    }
+    
+    localStorage.setItem('gymDocLang', lang);
+}
+
+// Cargar idioma guardado
+document.addEventListener('DOMContentLoaded', function() {
+    var savedLang = localStorage.getItem('gymDocLang');
+    if (savedLang) {
+        changeLanguage(savedLang);
+    }
+});
+
+// Buscador
+var searchInput = document.getElementById('searchInput');
+var searchResults = document.getElementById('searchResults');
+
+var searchData = [
+    { title: 'Introduccion / Introduction', href: '#Introduction', keywords: 'inicio start' },
+    { title: 'Requisitos / Requirements', href: '#requirement', keywords: 'php servidor apache' },
+    { title: 'Instalacion / Installation', href: '#Installation', keywords: 'instalar setup ftp' },
+    { title: 'Actualizacion / Update', href: '#update', keywords: 'actualizar upgrade' },
+    { title: 'API Movil / Mobile API', href: '#mobile_api', keywords: 'mobile app' },
+    { title: 'Login / Acceso', href: '#fronted-login', keywords: 'usuario password' },
+    { title: 'Registro / Registration', href: '#fronted', keywords: 'registro member' },
+    { title: 'Administrador / Admin', href: '#admin_view', keywords: 'admin dashboard' },
+    { title: 'Personal / Staff', href: '#staff_view', keywords: 'personal empleados' },
+    { title: 'Miembro / Member', href: '#member_view', keywords: 'miembro socio' },
+    { title: 'Contador / Accountant', href: '#accountant_view', keywords: 'contador finanzas' },
+    { title: 'FAQ / Preguntas', href: '#FAQ', keywords: 'errores problemas' },
+    { title: 'Idioma / Language', href: '#setting-up-Language', keywords: 'idioma rtl' }
+];
+
+searchInput.addEventListener('input', function() {
+    var query = this.value.toLowerCase().trim();
+    
+    if (query.length < 2) {
+        searchResults.classList.remove('active');
+        return;
+    }
+    
+    var results = searchData.filter(function(item) {
+        return item.title.toLowerCase().includes(query) || 
+               item.keywords.toLowerCase().includes(query);
+    });
+    
+    if (results.length > 0) {
+        searchResults.innerHTML = results.map(function(item) {
+            return '<div class="search-result-item" onclick="goToSection(\'' + item.href + '\')">' + 
+                   '<i class="fas fa-file-alt" style="margin-right: 10px; color: var(--secondary-color);"></i>' +
+                   item.title + '</div>';
+        }).join('');
+        searchResults.classList.add('active');
+    } else {
+        searchResults.innerHTML = '<div class="search-result-item">Sin resultados / No results</div>';
+        searchResults.classList.add('active');
+    }
+});
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-container')) {
+        searchResults.classList.remove('active');
+    }
+});
+
+function goToSection(href) {
+    searchResults.classList.remove('active');
+    searchInput.value = '';
+    window.location.href = href;
+}
+
+// Barra de progreso
+window.addEventListener('scroll', function() {
+    var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var scrolled = (winScroll / height) * 100;
+    document.getElementById('readingProgress').style.width = scrolled + '%';
+    
+    var scrollBtn = document.getElementById('scrollTopBtn');
+    if (winScroll > 300) {
+        scrollBtn.classList.add('visible');
+    } else {
+        scrollBtn.classList.remove('visible');
+    }
+});
+
+// Scroll arriba
+document.getElementById('scrollTopBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Menu mobile
+document.getElementById('menuToggle').addEventListener('click', function() {
+    document.getElementById('side-nav').classList.toggle('active');
+});
+
+document.getElementById('tocToggle').addEventListener('click', function() {
+    document.getElementById('side-nav').classList.toggle('active');
+});
+
+document.querySelectorAll('#side-nav a').forEach(function(link) {
+    link.addEventListener('click', function() {
+        if (window.innerWidth <= 992) {
+            document.getElementById('side-nav').classList.remove('active');
+        }
+    });
+});
+</script>
+
+</body>
+</html>
